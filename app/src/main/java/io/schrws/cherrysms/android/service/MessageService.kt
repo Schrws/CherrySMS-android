@@ -17,13 +17,12 @@ import org.koin.android.ext.android.inject
 import com.google.gson.JsonObject
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import io.schrws.cherrysms.android.di.Constants.Companion.CHANNEL_ID
 import io.schrws.cherrysms.android.di.SharedPreferenceStorage
 
 class MessageService : Service() {
     private val shared: SharedPreferenceStorage by inject()
     private val api: Api by inject()
-
-    private val CHANNEL_ID = "CherrySMS"
 
     override fun onBind(p0: Intent?): IBinder? {
         return null
@@ -37,7 +36,7 @@ class MessageService : Service() {
             NotificationManagerCompat.from(this).createNotificationChannel(mChannel)
         }
 
-        startForeground(1847, NotificationCompat.Builder(this, CHANNEL_ID).setContentTitle("CherrySMS").setContentText("Listen").build())
+        startForeground(1847, NotificationCompat.Builder(this, CHANNEL_ID).build())
         registerReceiver(smsReceiver, IntentFilter(Telephony.Sms.Intents.SMS_RECEIVED_ACTION))
     }
 

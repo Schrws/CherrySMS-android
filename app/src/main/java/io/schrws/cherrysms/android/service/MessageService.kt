@@ -45,6 +45,11 @@ class MessageService : Service() {
         unregisterReceiver(smsReceiver)
     }
 
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        super.onStartCommand(intent, flags, startId)
+        return START_STICKY
+    }
+
     private val smsReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(p0: Context?, p1: Intent?) {
             when (p1?.action) {
@@ -56,6 +61,7 @@ class MessageService : Service() {
                         body.addProperty("message", smsMessage.messageBody)
 
                         api.postMessage(body)
+                            .retry()
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe({}, {})

@@ -15,7 +15,7 @@ import kotlinx.android.synthetic.main.main_activity.*
 import org.koin.android.ext.android.inject
 
 class MainActivity : AppCompatActivity() {
-    private val shared: SharedPreferenceStorage by inject()
+    private val prefStorage: SharedPreferenceStorage by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,10 +30,10 @@ class MainActivity : AppCompatActivity() {
                 PERMISSION_REQUEST_CODE)
         } else startService()
 
-        id_edit.setText(shared.telegramID.toString())
+        id_edit.setText(prefStorage.telegramID.toString())
 
         id_button.setOnClickListener {
-            shared.telegramID = id_edit.text.toString().toLongOrNull() ?: 0
+            prefStorage.telegramID = id_edit.text.toString().toLongOrNull() ?: 0
         }
     }
 
@@ -41,7 +41,7 @@ class MainActivity : AppCompatActivity() {
                                             permissions: Array<String>, grantResults: IntArray) {
         when (requestCode) {
             PERMISSION_REQUEST_CODE -> {
-                if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED))
+                if (grantResults.contains(PackageManager.PERMISSION_DENIED).not())
                     startService()
             }
         }

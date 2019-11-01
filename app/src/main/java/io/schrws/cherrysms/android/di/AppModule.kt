@@ -32,13 +32,11 @@ fun provideApi(cache: Cache): Api {
         }
         .build()
 
-    val retrofit = Retrofit.Builder()
+    return Retrofit.Builder()
         .baseUrl(BuildConfig.SERVER_URL)
         .client(okHttp)
         .addConverterFactory(GsonConverterFactory.create())
         .addCallAdapterFactory(RxJava2CallAdapterFactory.createAsync())
         .build()
         .create(Api::class.java)
-
-    return retrofit
 }

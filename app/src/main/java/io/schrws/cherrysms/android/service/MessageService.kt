@@ -24,9 +24,7 @@ class MessageService : Service() {
     private val shared: SharedPreferenceStorage by inject()
     private val api: Api by inject()
 
-    override fun onBind(p0: Intent?): IBinder? {
-        return null
-    }
+    override fun onBind(p0: Intent?): IBinder? { return null }
 
     override fun onCreate() {
         super.onCreate()

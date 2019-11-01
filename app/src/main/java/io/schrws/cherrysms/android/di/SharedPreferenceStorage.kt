@@ -9,7 +9,6 @@ class SharedPreferenceStorage(appContext: Context) {
         const val TELEGRAM_ID = "telegram_id"
     }
 
-
     private val prefs = appContext.applicationContext.getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
 
     var telegramID: Long

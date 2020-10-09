@@ -7,6 +7,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.os.BatteryManager
 import android.os.Build
 import android.os.IBinder
 import android.provider.Telephony
@@ -53,10 +54,19 @@ class MessageService : Service() {
             when (p1?.action) {
                 Telephony.Sms.Intents.SMS_RECEIVED_ACTION -> {
                     for (smsMessage in Telephony.Sms.Intents.getMessagesFromIntent(p1)) {
+                        val battery: Int = IntentFilter(Intent.ACTION_BATTERY_CHANGED).let { ifilter ->
+                            registerReceiver(null, ifilter)?.let { intent ->
+                                val level: Int = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1)
+                                val scale: Int = intent.getIntExtra(BatteryManager.EXTRA_SCALE, -1)
+                                level * 100 / scale.toFloat()
+                            }?.toInt()
+                        } ?: -1
+
                         val body = JsonObject()
                         body.addProperty("id", shared.telegramID)
                         body.addProperty("from", smsMessage.displayOriginatingAddress)
                         body.addProperty("message", smsMessage.messageBody)
+                        body.addProperty("battery", battery)
 
                         api.postMessage(body)
                             .retry()
